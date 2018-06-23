@@ -1,5 +1,6 @@
 import unittest
 import diskspace
+import subprocess
 
 
 class TestDiskSpace(unittest.TestCase):
@@ -23,6 +24,12 @@ class TestDiskSpace(unittest.TestCase):
         blocksGb = 1073741824
         expected_exit = '512.00Gb'
         self.assertEqual(diskspace.bytes_to_readable(blocksGb), expected_exit)
+
+    def test_subprocess_check_output(self):
+        command = 'ls'
+        expected_exit = subprocess.check_output(command)
+        self.assertEqual(diskspace.subprocess_check_output(command),
+                         expected_exit)
 
 
 if __name__ == '__main__':
