@@ -1,6 +1,8 @@
 import unittest
 import diskspace
 import subprocess
+import StringIO
+import sys
 
 
 class TestDiskSpace(unittest.TestCase):
@@ -30,6 +32,37 @@ class TestDiskSpace(unittest.TestCase):
         expected_exit = subprocess.check_output(command)
         self.assertEqual(diskspace.subprocess_check_output(command),
                          expected_exit)
+
+    def test_print_tree(self):
+        path = '/home/Downloads'
+        total_size = 1
+
+        file_tree_node = {
+            'print_size': '100.00Kb',
+            'children': [],
+            'size': total_size
+        }
+
+        file_tree = {
+            path: file_tree_node
+        }
+
+        largest_size = 2
+        catched = StringIO.StringIO()
+        sys.stdout = catched
+
+        diskspace.print_tree(
+            file_tree,
+            file_tree_node,
+            path,
+            largest_size,
+            total_size,
+        )
+
+        expected_exit = '100.00Kb  100%  {}\n'.format(path)
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(catched.getvalue(), expected_exit)
 
 
 if __name__ == '__main__':
